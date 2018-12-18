@@ -10,6 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import revind.android.com.rewind.notification.RewindNotification;
+
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        RewindNotification.rewind(this);
     }
 
     @Override
