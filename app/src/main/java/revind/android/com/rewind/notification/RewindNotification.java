@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteActionCompat;
 import androidx.core.app.RemoteInput;
+import revind.android.com.rewind.service.RewindService;
 
 public class RewindNotification {
 
@@ -29,17 +30,22 @@ public class RewindNotification {
 
     public static void rewind(Context context){
         RewindNotification rewindNotification = new RewindNotification(context);
+        rewindNotification.addPublicVersion();
         rewindNotification.createNotificationChannel();
         rewindNotification.showSimpleNotification();
         rewindNotification.sleep(2000);
         rewindNotification.updatedSimpleNotification();
         rewindNotification.addActions();
+        rewindNotification.sleep(2000);
+        rewindNotification.addMessageStyle();
     }
 
     public RewindNotification(Context context) {
         this.contextWeakReference = new WeakReference<>(context);
         this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         this.notificationBuilder = new NotificationCompat.Builder(context, ID_CHANNEL);
+        this.notificationBuilder.setCategory(Notification.CATEGORY_RECOMMENDATION);
+        this.notificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
     }
 
     public void createNotificationChannel(){
@@ -48,6 +54,13 @@ public class RewindNotification {
         }
         NotificationChannel channel = new NotificationChannel(ID_CHANNEL,"Channel1",NotificationManager.IMPORTANCE_DEFAULT);
         notificationManager.createNotificationChannel(channel);
+    }
+
+    public void addPublicVersion(){
+        NotificationCompat.Builder publicVersionBuilder = new NotificationCompat.Builder(contextWeakReference.get(),ID_CHANNEL);
+        publicVersionBuilder.setContentTitle("Public Version");
+        publicVersionBuilder.setContentInfo("Public Content");
+        notificationBuilder.setPublicVersion(publicVersionBuilder.build());
     }
 
     public void showSimpleNotification(){
@@ -69,15 +82,19 @@ public class RewindNotification {
     }
 
     public void addActions(){
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("https://www.facebook.com"));
-        PendingIntent pendingIntent = PendingIntent.getActivity(contextWeakReference.get(),0,intent,0);
+        Intent intent = new Intent(contextWeakReference.get(),RewindService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(contextWeakReference.get(),0,intent,0);
         RemoteInput remoteInput = new RemoteInput.Builder("input_result").setLabel("Enter you name").build();
         NotificationCompat.Action action  = new NotificationCompat.Action.Builder(androidx.core.R.drawable.notification_icon_background,"Action",pendingIntent).addRemoteInput(remoteInput).build();
         notificationBuilder.addAction(androidx.core.R.drawable.notification_icon_background,"Action2",pendingIntent);
         notificationBuilder.addAction(action);
         notificationManager.notify(ID_BASE_NOTIFICATION,notificationBuilder.build());
+    }
+
+    public void addMessageStyle(){
+        notificationBuilder.setStyle(new NotificationCompat.MessagingStyle("ME").setConversationTitle("Rewind Android").addMessage("HI",1111,"GObi").addMessage("How are you",22222,"Gokul"));
+        notificationManager.notify(ID_BASE_NOTIFICATION,notificationBuilder.build());
+
     }
 
     public void sleep(long timeInMilli){

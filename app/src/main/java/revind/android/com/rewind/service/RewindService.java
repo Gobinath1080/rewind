@@ -1,7 +1,9 @@
 package revind.android.com.rewind.service;
 
+import android.app.RemoteInput;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -24,6 +26,11 @@ public class RewindService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: Running");
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (RemoteInput.getResultsFromIntent(intent) != null) {
+                Log.d(TAG, "onStartCommand: Result from simple notification remote input" + RemoteInput.getResultsFromIntent(intent).getCharSequence("input_result"));
+            }
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
