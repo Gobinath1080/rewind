@@ -1,4 +1,4 @@
-package revind.android.com.rewind;
+package revind.android.com.rewind.activity;
 
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import revind.android.com.rewind.R;
 import revind.android.com.rewind.notification.RewindNotification;
 
 import android.view.Menu;
